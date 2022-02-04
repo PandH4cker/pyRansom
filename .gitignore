@@ -1,0 +1,4 @@
+*.enc
+*.dec
+__pycache__
+.idea
