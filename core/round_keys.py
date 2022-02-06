@@ -8,11 +8,11 @@ from Crypto.Hash.SHA256 import SHA256Hash
 from core import generate_password, generate_keys
 
 ROUND_KEY_COUNTER = 8192
-CIPHER_KEY = 0x000
-INTEGRITY_KEY = 0x001
+CIPHER_KEY = 0xcafe
+INTEGRITY_KEY = 0xacebabe
 
 
-def round_keys(password: bytes, salt: bytes, N: int) -> [bytes]:
+def round_keys(password: bytes, salt: bytes, N: int) -> bytes:
     h = SHA256.new()
     hN = password
     for i in range(N):
@@ -21,8 +21,8 @@ def round_keys(password: bytes, salt: bytes, N: int) -> [bytes]:
     return h.digest()
 
 
-def derivative_keys(_password, _salt):
-    km = round_keys(_password, _salt, ROUND_KEY_COUNTER)
+def derivative_keys(password: bytes, salt: bytes) -> (bytes, bytes):
+    km = round_keys(password, salt, ROUND_KEY_COUNTER)
     kc = SHA256Hash(km + CIPHER_KEY.to_bytes(4, 'little')).digest()
     ki = SHA256Hash(km + INTEGRITY_KEY.to_bytes(4, 'little')).digest()
     return kc, ki

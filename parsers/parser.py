@@ -4,12 +4,39 @@ import argparse
 def buildParser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Encrypt/Decrypt given file")
 
-    parser.add_argument(
+    subparsers = parser.add_subparsers(help="Encryption Mode")
+
+    symmetricParser = subparsers.add_parser("sym", help="Symmetric Mode")
+    symmetricParser.set_defaults(cmd="sym")
+
+    asymmetricParser = subparsers.add_parser("asym", help="Asymmetric Mode")
+    asymmetricParser.set_defaults(cmd="asym")
+
+    symmetricEncryptionGroup = symmetricParser.add_argument_group("Symmetric Encryption")
+    symmetricEncryptionGroup.add_argument(
         "--password",
         '-p',
         type=str,
         metavar="<Password>",
         help="Password to be used to encrypt/decrypt the file",
+        required=True
+    )
+
+    asymmetricEncryptionGroup = asymmetricParser.add_argument_group("Asymmetric Encryption")
+    asymmetricEncryptionGroup.add_argument(
+        '--private-key',
+        '-priv',
+        type=str,
+        metavar="<Private Key Filename>",
+        help="Receiver/Sender Private Key",
+        required=True
+    )
+    asymmetricEncryptionGroup.add_argument(
+        '--public-key',
+        '-pub',
+        type=str,
+        metavar="<Public Key Filename>",
+        help="Receiver/Sender Public Key",
         required=True
     )
 

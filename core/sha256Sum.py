@@ -4,14 +4,14 @@ from Crypto.Hash import SHA256
 from binascii import hexlify
 
 
-def Sha256Sum(filename):
+def Sha256Sum(filename: str) -> bytes:
     try:
         with open(filename, 'rb') as f:
             h = SHA256.new()
             while b := f.read(2048): h.update(b)
             return h.digest()
     except FileNotFoundError:
-        return ''
+        return b''
 
 
 if __name__ == '__main__':

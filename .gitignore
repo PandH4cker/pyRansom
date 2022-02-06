@@ -2,3 +2,4 @@
 *.dec
 __pycache__
 .idea
+*.pem
