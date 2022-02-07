@@ -39,6 +39,13 @@ def buildParser() -> argparse.ArgumentParser:
         help="Receiver/Sender Public Key",
         required=True
     )
+    asymmetricEncryptionGroup.add_argument(
+        'users-public-keys',
+        nargs='*',
+        type=str,
+        metavar="<User Public Key>",
+        help="User Public Key (Multi-Protected File)"
+    )
 
     inputOutputGroup = parser.add_argument_group("I/O")
     inputOutputGroup.add_argument(

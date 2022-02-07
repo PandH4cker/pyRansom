@@ -3,12 +3,10 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pss
 
-from core import generate_keys
 from core.symmetric.decrypt import symDecryptBlock
-from core.symmetric.encrypt import symEncryptBlock
 from utils import getFileSize
 
-CHUNK_SIZE = 2048
+CHUNK_SIZE = 2064
 
 
 def asymDecryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey: str) -> None:

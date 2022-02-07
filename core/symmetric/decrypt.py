@@ -1,11 +1,11 @@
 from Crypto.Cipher import AES
 from Crypto.Hash import HMAC, SHA256
-from Crypto.Util.Padding import unpad
+from Crypto.Util.Padding import unpad, pad
 
 from core import derivative_keys
 from utils import getFileSize
 
-CHUNK_SIZE = 2048
+CHUNK_SIZE = 2064
 SALT_SIZE = 8
 
 
