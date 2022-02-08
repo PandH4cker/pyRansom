@@ -1,3 +1,5 @@
+import sys
+
 from core import symEncryptFile, symDecryptFile, generate_keys
 from core.asymmetric import asymEncryptFile
 from core.asymmetric.decrypt import asymDecryptFile
@@ -21,6 +23,6 @@ if __name__ == '__main__':
         privateKey = args.private_key
         publicKey = args.public_key
         if args.encrypt:
-            asymEncryptFile(inputFile, outputFile, privateKey, publicKey)
+            asymEncryptFile(inputFile, outputFile, privateKey, publicKey, vars(args)['users-public-keys'])
         if args.decrypt:
-            asymDecryptFile(inputFile, outputFile, privateKey, publicKey)
+            asymDecryptFile(inputFile, outputFile, privateKey, publicKey, vars(args)['users-public-keys'][0])

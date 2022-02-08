@@ -13,7 +13,10 @@ CHUNK_SIZE = 2048
 def asymEncryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey: str, users: list = None) -> None:
     """
     Asymmetrically Encrypt File.
-    File Format: CIPHERED_KEY | IV | ENCRYPTED | RSA-PSS-Signature
+    File Format: CIPHERED_KEY(RSA_MODULE_SIZE) | IV(16) | ENCRYPTED(?) | RSA-PSS-Signature(RSA_MODULE_SIZE)
+    Multi-Protect Format: 0x00(1) | Sha256(OWN_PUBLIC_KEY)(32) | OWN_PUBLIC_KEY(KC | IV)(RSA_MODULE_SIZE) |
+                          0x00(1) | Sha256(USER_1_PUB_KEY)(32) | USER_1_PUB_KEY(KC | IV)(RSA_MODULE_SIZE) ... |
+                          0x01(1) | ENCRYPTED(?) | RSA-PSS(RSA_MODULE_SIZE)
     :param users: List of users that will have access to this file
     :param inputFile: File to be encrypted
     :param outputFile: File to save the encrypted data
@@ -31,7 +34,7 @@ def asymEncryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey:
         )
         h = SHA256.new()
 
-        if users is not None:
+        if users:
             appendReceiver(AESCipher, h, kc, publicKey, writer)
             for userPublicKey in users:
                 appendReceiver(AESCipher, h, kc, userPublicKey, writer)
@@ -43,7 +46,6 @@ def asymEncryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey:
                 RSA.importKey(open(publicKey).read()),
                 hashAlgo=SHA256.new()
             )
-
             cipheredKey = RSAOAEPCipher.encrypt(kc)
             writer.write(cipheredKey)
             writer.write(AESCipher.iv)
