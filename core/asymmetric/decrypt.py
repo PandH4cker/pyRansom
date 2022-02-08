@@ -86,6 +86,8 @@ def asymDecryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey:
                 writer.write(decrypted_bytes)
                 h.update(chunk)
 
+                decipher = AES.new(kc, AES.MODE_CBC, iv=chunk[-AES.block_size:])
+
             signature = reader.read(RSAPublicModuleSize)
             PSS.verify(h, signature)
         except ValueError as e:

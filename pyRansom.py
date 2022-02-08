@@ -25,4 +25,5 @@ if __name__ == '__main__':
         if args.encrypt:
             asymEncryptFile(inputFile, outputFile, privateKey, publicKey, vars(args)['users-public-keys'])
         if args.decrypt:
-            asymDecryptFile(inputFile, outputFile, privateKey, publicKey, vars(args)['users-public-keys'][0])
+            asymDecryptFile(inputFile, outputFile, privateKey, publicKey,
+                            vars(args)['users-public-keys'][0] if vars(args)['users-public-keys'] else "")

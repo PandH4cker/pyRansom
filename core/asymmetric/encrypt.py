@@ -56,6 +56,8 @@ def asymEncryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey:
             encrypted_bytes = symEncryptBlock(AESCipher, chunk, AES.block_size)
             writer.write(encrypted_bytes)
             h.update(encrypted_bytes)
+
+            AESCipher = AES.new(kc, AES.MODE_CBC, iv=encrypted_bytes[-AES.block_size:])
         writer.write(PSS.sign(h))
 
 

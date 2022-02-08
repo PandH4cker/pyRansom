@@ -38,6 +38,7 @@ def symDecryptFile(inputFile: str, outputFile: str, password: bytes) -> None:
                 decrypted_bytes = symDecryptBlock(decipher, chunk, AES.block_size)
                 writer.write(decrypted_bytes)
                 _mac_bytes.update(chunk)
+                decipher = AES.new(kc, AES.MODE_CBC, iv=chunk[-AES.block_size:])
 
             mac = reader.read(SHA256.digest_size)
             _mac_bytes.verify(mac)

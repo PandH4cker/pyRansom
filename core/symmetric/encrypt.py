@@ -33,6 +33,8 @@ def symEncryptFile(inputFile: str, outputFile: str, password: bytes, salt: bytes
             encrypted_bytes = symEncryptBlock(cipher, chunk, AES.block_size)
             writer.write(encrypted_bytes)
             _mac_bytes.update(encrypted_bytes)
+
+            cipher = AES.new(kc, AES.MODE_CBC, iv=encrypted_bytes[-AES.block_size:])
         writer.write(_mac_bytes.digest())
 
 
