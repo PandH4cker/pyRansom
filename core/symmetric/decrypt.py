@@ -42,6 +42,7 @@ def symDecryptFile(inputFile: str, outputFile: str, password: bytes) -> None:
             mac = reader.read(SHA256.digest_size)
             _mac_bytes.verify(mac)
     except ValueError as e:
+        open(outputFile, 'r+').truncate()
         print("[-]", e)
 
 

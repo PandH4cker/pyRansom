@@ -89,4 +89,5 @@ def asymDecryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey:
             signature = reader.read(RSAPublicModuleSize)
             PSS.verify(h, signature)
         except ValueError as e:
+            open(outputFile, 'r+').truncate()
             print('[-]', e)
