@@ -26,39 +26,43 @@ def asymEncryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey:
     """
     kc = generate_keys(AES.key_size[2])
 
-    with open(outputFile, 'wb') as writer, open(inputFile, 'rb') as reader:
-        AESCipher = AES.new(kc, AES.MODE_CBC, iv=generate_keys(AES.block_size))
+    try:
+        with open(outputFile, 'wb') as writer, open(inputFile, 'rb') as reader:
+            AESCipher = AES.new(kc, AES.MODE_CBC, iv=generate_keys(AES.block_size))
 
-        PSS = pss.new(
-            RSA.importKey(open(privateKey).read())
-        )
-        h = SHA256.new()
-
-        if users:
-            appendReceiver(AESCipher, h, kc, publicKey, writer)
-            for userPublicKey in users:
-                appendReceiver(AESCipher, h, kc, userPublicKey, writer)
-
-            writer.write(0x01.to_bytes(4, 'little'))
-            h.update(0x01.to_bytes(4, 'little'))
-        else:
-            RSAOAEPCipher = PKCS1_OAEP.new(
-                RSA.importKey(open(publicKey).read()),
-                hashAlgo=SHA256.new()
+            PSS = pss.new(
+                RSA.importKey(open(privateKey).read())
             )
-            cipheredKey = RSAOAEPCipher.encrypt(kc)
-            writer.write(cipheredKey)
-            writer.write(AESCipher.iv)
-            h.update(cipheredKey)
-            h.update(AESCipher.iv)
+            h = SHA256.new()
 
-        while chunk := reader.read(CHUNK_SIZE):
-            encrypted_bytes = symEncryptBlock(AESCipher, chunk, AES.block_size)
-            writer.write(encrypted_bytes)
-            h.update(encrypted_bytes)
+            if users:
+                appendReceiver(AESCipher, h, kc, publicKey, writer)
+                for userPublicKey in users:
+                    appendReceiver(AESCipher, h, kc, userPublicKey, writer)
 
-            AESCipher = AES.new(kc, AES.MODE_CBC, iv=encrypted_bytes[-AES.block_size:])
-        writer.write(PSS.sign(h))
+                writer.write(0x01.to_bytes(4, 'little'))
+                h.update(0x01.to_bytes(4, 'little'))
+            else:
+                RSAOAEPCipher = PKCS1_OAEP.new(
+                    RSA.importKey(open(publicKey).read()),
+                    hashAlgo=SHA256.new()
+                )
+                cipheredKey = RSAOAEPCipher.encrypt(kc)
+                writer.write(cipheredKey)
+                writer.write(AESCipher.iv)
+                h.update(cipheredKey)
+                h.update(AESCipher.iv)
+
+            while chunk := reader.read(CHUNK_SIZE):
+                encrypted_bytes = symEncryptBlock(AESCipher, chunk, AES.block_size)
+                writer.write(encrypted_bytes)
+                h.update(encrypted_bytes)
+
+                AESCipher = AES.new(kc, AES.MODE_CBC, iv=encrypted_bytes[-AES.block_size:])
+            writer.write(PSS.sign(h))
+    except FileNotFoundError as e:
+        print("[-]", e)
+        exit(1)
 
 
 def appendReceiver(cipher, _hash, cipherKey, userPublicKey, writer):

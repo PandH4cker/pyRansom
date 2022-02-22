@@ -115,8 +115,18 @@ Then you can specify all the receivers public keys, only those could decrypt the
 python pyRansom.py -e --input venv\Scripts\activate.fish --output output\activate.fish.enc asym -priv senderPriv.pem -pub senderPub.pem users\Thierry\thierry-pub.pem users\Lorens\lorens-pub.pem
 ```
 
+_Or by using the wrapper_:
+```shell
+python multi_protect.py -e venv\Scripts\activate.fish output\activate.fish.enc senderPriv.pem senderPub.pem  users\Thierry\thierry-pub.pem users\Lorens\lorens-pub.pem
+```
+
 For decryption, for example, Thierry as the receiver, will use its own private key, 
 the sender public key and specify its public key.
 ```shell
 python pyRansom.py -d --input output\activate.fish.enc --output output\activate.fish.dec asym -priv users\Thierry\thierry-priv.pem -pub senderPub.pem users\Thierry\thierry-pub.pem
+```
+
+_Or by using the wrapper_:
+```shell
+python multi_protect.py -d output\activate.fish.enc output\activate.fish.dec users\Thierry\thierry-priv.pem senderPub.pem users\Thierry\thierry-pub.pem
 ```

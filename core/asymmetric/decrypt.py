@@ -93,3 +93,4 @@ def asymDecryptFile(inputFile: str, outputFile: str, privateKey: str, publicKey:
         except ValueError as e:
             open(outputFile, 'r+').truncate()
             print('[-]', e)
+            exit(1)

@@ -1,5 +1,3 @@
-import sys
-
 from core import symEncryptFile, symDecryptFile, generate_keys
 from core.asymmetric import asymEncryptFile
 from core.asymmetric.decrypt import asymDecryptFile
